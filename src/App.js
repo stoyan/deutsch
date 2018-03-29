@@ -72,6 +72,7 @@ class App extends Component {
       i: 1,
       audio: getAudio(1),
       pause: false,
+      settings: location.hash.substring(1) === 'words',
     };
     window.addEventListener('keydown', (e) => {
       // space bar
@@ -126,10 +127,26 @@ class App extends Component {
       this.state.audio[Math.floor(Math.random() * this.state.audio.length)].play();  
     }
   }
-    
+
+  toggleSettings() {
+    this.setState({settings: !this.state.settings});
+  } 
+
   render() {
     return (
       <div>
+        <div className="settings">
+          <a href={this.state.settings ? '#words' : '#'} className="settingsLink" onClick={this.toggleSettings.bind(this)}>
+            📖 
+            {this.state.settings ? " Hide these words and let's do flashcards" : " Show all terms"}
+          </a>
+          {this.state.settings 
+            ? <div>
+                <Settings/> 
+              </div>
+            : null
+          }
+        </div>
         <Flashcard 
           question={this.state.question}
           answer={this.state.answer}
@@ -198,6 +215,19 @@ class Flashcard extends Component {
     );
   }
 }
+
+const Settings = () =>
+  <table cellSpacing="0" cellPadding="4"><tbody>
+    <tr><th>Term</th><th>Meaning</th></tr>
+    {
+      deutsch.map(k => 
+        <tr key={k[0]}>
+          <td>{k[0]}</td>
+          <td>{k[1]}</td>
+        </tr>
+      )
+    }
+  </tbody></table>;
 
 export default App;
 
